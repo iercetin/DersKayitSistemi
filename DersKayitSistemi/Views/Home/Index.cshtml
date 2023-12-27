@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Sayfası</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap İkonlar (isteğe bağlı) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e3f2fd;
+            color: #102a43;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            object-fit: cover;
+        }
+
+        .card-header {
+            color: #ffffff;
+        }
+
+        .card-body {
+            background-color: #ffffffdd;
+            padding: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #1e6091;
+            border-color: #1e6091;
+        }
+
+            .btn-primary:hover {
+                background-color: #164e63;
+                border-color: #164e63;
+            }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/tr/archive/5/5f/20200406212436%21Ankara_%C3%9Cniversitesi_logosu.png" alt="Ankara Üniversitesi Logosu" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="text-center my-4">Ders Kayıt Sistemi</h3>
+                        <form action="/Kullanici/GirisYap" method="post">
+                            <!-- Kullanıcı No -->
+                            <div class="mb-3">
+                                <label for="kullanici" class="form-label">Kullanıcı</label>
+                                <input type="text" class="form-control" name="kullanici" id="kullanici" required>
+                            </div>
+                            <!-- Şifre -->
+                            <div class="mb-3">
+                                <label for="sifre" class="form-label">Şifre</label>
+                                <input type="password" class="form-control" name="sifre" id="sifre" required>
+                            </div>
+                            <!-- Giriş Yap Butonu -->
+                            <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" style="display: none">
+        <div class="container text-center">
+            <span>&copy; 2023 Ankara Üniversitesi. Tüm haklari saklidir.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

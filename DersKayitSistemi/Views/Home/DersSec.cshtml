@@ -1,0 +1,288 @@
+﻿@model IEnumerable<DersKayitSistemi.Models.Ders>
+
+@{
+    ViewData["Title"] = "Test";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders Seçimi</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e3f2fd;
+            color: #102a43;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            background-color: #1e6091;
+            color: #ffffff;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .card-body {
+            background-color: #ffffffdd;
+            padding: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #1e6091;
+            border-color: #1e6091;
+        }
+
+        .btn-primary:hover {
+            background-color: #164e63;
+            border-color: #164e63;
+        }
+
+        .footer {
+            padding: 10px 0;
+            text-align: center;
+            background-color: #1e6091;
+            color: #ffffff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .table-container {
+            margin-bottom: 100px; /* Footer height + some extra space */
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigasyon Barı -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="#">
+                <img src="https://upload.wikimedia.org/wikipedia/tr/archive/5/5f/20200406212436%21Ankara_%C3%9Cniversitesi_logosu.png" alt="Logo" height="30">
+            </a>
+            <!-- Menü Butonu (Mobil için) -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Menü Öğeleri -->
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Ders Seçimi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ders Programı</a>
+                    </li>
+                </ul>
+                <!-- Sağa yaslanmış Çıkış butonu -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Çıkış</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Öğrenci ve Akademik Bilgi Paneli
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Öğrenci Bilgileri -->
+                            <div class="col-md-3">
+                                <label class="form-label">Öğrenci Adı:</label>
+                                <input type="text" class="form-control" value="Öğrenci Adı" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Öğrenci No:</label>
+                                <input type="text" class="form-control" id="kullaniciid" value="@ViewBag.KullaniciNo" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Sınıf:</label>
+                                <input type="text" class="form-control" value="3" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bölüm:</label>
+                                <input type="text" class="form-control" value="Bilgisayar Mühendisliği" readonly>
+                            </div>
+                            <!-- Akademik Bilgiler -->
+                            <div class="col-md-3">
+                                <label class="form-label">Öğrenim Dönemi:</label>
+                                <input type="text" class="form-control" value="2023/2024 Güz" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Toplam Alınabilecek Kredi:</label>
+                                <input type="number" class="form-control" value="30" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Öğrencinin Toplam Kredisi:</label>
+                                <input type="number" class="form-control" value="0" readonly id="totalCredits">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Bu Dönem Alınan Kredi:</label>
+                                <input type="number" class="form-control" value="0" readonly id="thisTermCredits">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="container py-5">
+        <!-- Ders Listesi -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Ders Seçimi</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Ders Kodu</th>
+                                        <th scope="col">Ders Adı</th>
+                                        <th scope="col">Kontenjan</th>
+                                        <th scope="col">Seç</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var ders in Model)
+                                    {
+                                        <tr>
+                                            <td>@ders.DersKodu</td>
+                                            <td>@ders.DersAdi</td>
+                                            <td>@ders.DersKontenjan</td>
+                                            <td>
+                                                <div class="checkbox-group">
+                                                    <button class="btn btn-success btn-sm">Dersi Seç</button>
+                                                    <!--
+                                                    <button class="btn btn-danger btn-sm">Dersi Kaldır</button>
+                                                    -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Onay Butonu -->
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary">Onaya Gönder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onay Modalı -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Ders Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bu dersi seçmek istediğinizden emin misiniz?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                    <button type="button" class="btn btn-primary" id="confirmSelection">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; 2023 Ankara Üniversitesi. Tüm hakları saklıdır.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var selectButtons = document.querySelectorAll('.btn-success');
+            var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            var confirmButton = document.getElementById('confirmSelection');
+            var selectedCourse;
+            var kullaniciId = document.getElementById('kullaniciid').value;
+
+            selectButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    selectedCourse = this.closest('tr');
+                    confirmationModal.show();
+                });
+            });
+
+            confirmButton.addEventListener('click', function () {
+                var courseCode = selectedCourse.cells[0].innerText;
+
+                var data = {
+                    DersKodu: courseCode,
+                    KullaniciNo: kullaniciId
+                };
+
+                fetch('/api/DersSecim/select', { // API'nin doğru URL'sini kullanın
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Ders başarıyla seçildi.");
+                            // Başarı durumunda yapılacak işlemler
+                        } else {
+                            console.error("Ders seçimi yapılamadı.");
+                            // Hata durumunda yapılacak işlemler
+                        }
+                    })
+
+                // Burada seçilen dersin bilgileriyle ilgili işlemleri yapabilirsiniz
+                console.log("Seçilen Ders: " + courseCode + " - " + courseName);
+                confirmationModal.hide();
+            });
+        });
+    </script>
+
+
+</body>
+</html>
