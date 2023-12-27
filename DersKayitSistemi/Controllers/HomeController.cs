@@ -44,12 +44,10 @@ namespace DersKayitSistemi.Controllers
             var kullaniciNo = HttpContext.Session.GetString("KullaniciNo");
             if (kullaniciNo != null)
             {
-                ViewBag.KullaniciNo = kullaniciNo; // ViewBag kullanarak view'a veriyi aktar
+                ViewBag.KullaniciNo = kullaniciNo;
             }
             else
             {
-                // KullaniciNo session'da yoksa, uygun bir işlem yapın
-                // Örneğin, kullanıcıyı giriş sayfasına yönlendirme
                 return RedirectToAction("Login", "Kullanici");
             }
 
@@ -58,8 +56,11 @@ namespace DersKayitSistemi.Controllers
 
         public IActionResult DersOnayla()
         {
-            return View();
+            var dersSecimleri = _context.DersSecim.Include(ds => ds.Kullanici).Include(ds => ds.Ders).ToList();
+
+            return View(dersSecimleri);
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

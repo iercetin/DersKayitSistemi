@@ -49,15 +49,20 @@ namespace DersKayitSistemi.Controllers
         }
 
 
-        [HttpGet("student/{kullaniciId}")]
-        public IActionResult GetDersSecimlerByStudent(int kullaniciId)
+        [HttpGet("selected/{kullaniciNo}")]
+        public IActionResult GetSelectedCourses(string kullaniciNo)
         {
-            var dersSecimler = _context.DersSecim
-                .Where(ds => ds.KullaniciId == kullaniciId)
+            var kull = _context.Kullanicilar.FirstOrDefault(k => k.KullaniciNo == kullaniciNo);
+
+ 
+            var selectedCourses = _context.DersSecim
+                .Where(ds => ds.KullaniciId == kull.KullaniciId)
+                .Select(ds => new { ds.Ders.DersKodu, ds.Ders.DersAdi, ds.Ders.DersKontenjan, ds.OnayliMi })
                 .ToList();
 
-            return Ok(dersSecimler);
+            return Ok(selectedCourses);
         }
+
     }
 }
 
