@@ -48,6 +48,27 @@ namespace DersKayitSistemi.Controllers
             return Ok();
         }
 
+        [HttpPost("approve")]
+        public IActionResult ApproveDersSecim([FromBody] DersSecimDto dersSecimDto)
+        {
+            _logger.LogInformation($"Ders onaylama isteği: KullaniciNo: {dersSecimDto.KullaniciNo}, DersKodu: {dersSecimDto.DersKodu}");
+
+            var dersSecim = _context.DersSecim
+                .FirstOrDefault(ds => ds.Kullanici.KullaniciNo == dersSecimDto.KullaniciNo && ds.Ders.DersKodu == dersSecimDto.DersKodu);
+
+            if (dersSecim == null)
+            {
+                return NotFound("Ders seçimi bulunamadı.");
+            }
+
+            dersSecim.OnayliMi = true;
+
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
 
         [HttpGet("selected/{kullaniciNo}")]
         public IActionResult GetSelectedCourses(string kullaniciNo)

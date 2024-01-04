@@ -57,7 +57,7 @@
         }
 
         .table-container {
-            margin-bottom: 100px; /* Footer height + some extra space */
+            margin-bottom: 100px;
         }
 
         .checkbox-group {
@@ -79,7 +79,6 @@
             <a class="navbar-brand" href="#">
                 <img src="https://upload.wikimedia.org/wikipedia/tr/archive/5/5f/20200406212436%21Ankara_%C3%9Cniversitesi_logosu.png" alt="Logo" height="30">
             </a>
-            <!-- Menü Butonu (Mobil için) -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -116,86 +115,23 @@
                                     <th>Öğrenci Adı</th>
                                     <th>Ders Kodu</th>
                                     <th>Ders Adı</th>
-                                    <th>Seçilen Kredi</th>
-                                    <th>Seçim Durumu</th>
                                     <th>Onay</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Öğrenci Ders Seçimleri -->
-                                <tr>
-                                    <td>12345</td>
-                                    <td>Ayşe Yılmaz</td>
-                                    <td>MAT101</td>
-                                    <td>Matematik Analizi</td>
-                                    <td>4</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>12346</td>
-                                    <td>Mehmet Gündüz</td>
-                                    <td>FIZ102</td>
-                                    <td>Fizik II</td>
-                                    <td>4</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>12347</td>
-                                    <td>Elif Sönmez</td>
-                                    <td>KIM101</td>
-                                    <td>Genel Kimya</td>
-                                    <td>3</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>12348</td>
-                                    <td>Can Erkin</td>
-                                    <td>BM101</td>
-                                    <td>Bilgisayar Programlama</td>
-                                    <td>3</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>12349</td>
-                                    <td>Deniz Arda</td>
-                                    <td>MBG102</td>
-                                    <td>Moleküler Biyoloji ve Genetik</td>
-                                    <td>4</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>12350</td>
-                                    <td>Selin Kara</td>
-                                    <td>ING101</td>
-                                    <td>İngilizce I</td>
-                                    <td>2</td>
-                                    <td>Beklemede</td>
-                                    <td>
-                                        <button class="btn btn-success btn-sm">Onayla</button>
-                                        <button class="btn btn-danger btn-sm">Reddet</button>
-                                    </td>
-                                </tr>
-                                <!-- Diğer öğrenci ders seçimleri -->
+                                @foreach (var dersSecimi in Model)
+                                {
+                                    <tr>
+                                        <td>@dersSecimi.Kullanici.KullaniciNo</td>
+                                        <td>@dersSecimi.Kullanici.KullaniciIsim</td>
+                                        <td>@dersSecimi.Ders.DersKodu</td>
+                                        <td>@dersSecimi.Ders.DersAdi</td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm">Onayla</button>
+                                            <button class="btn btn-danger btn-sm">Reddet</button>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -204,7 +140,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+
     <footer class="footer">
         <div class="container">
             <span>&copy; 2023 Ankara Üniversitesi. Tüm hakları saklıdır.</span>
@@ -252,12 +188,11 @@
                 var courseId = selectedRow.cells[2].innerText;
 
                 var data = {
-                    studentId: studentId,
-                    courseId: courseId,
-                    status: 'Approved'
+                    DersKodu: courseId,
+                    KullaniciNo: studentId
                 };
 
-                fetch('/api/approve', {
+                fetch('/api/DersSecim/approve', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -267,7 +202,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
-                        // Burada isteğin başarılı olduğuna dair kullanıcıya bir geri bildirim yapılabilir.
                     })
                 confirmationModal.hide();
             });

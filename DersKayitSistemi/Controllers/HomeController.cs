@@ -1,5 +1,6 @@
 ﻿using DersKayitSistemi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace DersKayitSistemi.Controllers
@@ -57,6 +58,11 @@ namespace DersKayitSistemi.Controllers
         public IActionResult DersOnayla()
         {
             var dersSecimleri = _context.DersSecim.Include(ds => ds.Kullanici).Include(ds => ds.Ders).ToList();
+
+            foreach (var item in dersSecimleri)
+            {
+                _logger.LogInformation($"DersSecim Id: {item.Id}, Kullanici: {item.Kullanici}, Ders: {item.Ders}");
+            }
 
             return View(dersSecimleri);
         }
