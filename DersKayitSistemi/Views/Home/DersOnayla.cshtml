@@ -92,18 +92,17 @@
                         <a class="nav-link active" href="#">Ders Programı</a>
                     </li>
                 </ul>
-                <!-- Sağa yaslanmış Çıkış butonu -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Çıkış</a>
+                        <a class="nav-link" href="/">Çıkış</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    
+
     <div class="container mt-4">
-        <h3 class="mb-3">Ders Onayları</h3>
+        <h3 class="mb-3">Onay Bekleyen Dersler</h3>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -119,7 +118,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var dersSecimi in Model)
+                                @foreach (var dersSecimi in Model.Where(d => d.OnayliMi == false))
                                 {
                                     <tr>
                                         <td>@dersSecimi.Kullanici.KullaniciNo</td>
@@ -127,8 +126,8 @@
                                         <td>@dersSecimi.Ders.DersKodu</td>
                                         <td>@dersSecimi.Ders.DersAdi</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm">Onayla</button>
-                                            <button class="btn btn-danger btn-sm">Reddet</button>
+                                            <button class="btn btn-success btn-sm btn-secim">Onayla</button>
+                                            <button class="btn btn-danger btn-sm btn-reddet">Reddet</button>
                                         </td>
                                     </tr>
                                 }
@@ -138,8 +137,38 @@
                 </div>
             </div>
         </div>
-    </div>
 
+        <h3 class="mb-3">Onaylı Dersler</h3>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Öğrenci No</th>
+                                    <th>Öğrenci Adı</th>
+                                    <th>Ders Kodu</th>
+                                    <th>Ders Adı</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dersSecimi in Model.Where(d => d.OnayliMi == true))
+                                {
+                                    <tr>
+                                        <td>@dersSecimi.Kullanici.KullaniciNo</td>
+                                        <td>@dersSecimi.Kullanici.KullaniciIsim</td>
+                                        <td>@dersSecimi.Ders.DersKodu</td>
+                                        <td>@dersSecimi.Ders.DersAdi</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="container">
@@ -166,12 +195,30 @@
         </div>
     </div>
 
+    <!-- Refuse (Reddet) Modalı -->
+    <div class="modal fade" id="refusalModal" tabindex="-1" aria-labelledby="refusalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="refusalModalLabel">Ders Reddetme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bu dersi reddetmek istediğinizden emin misiniz?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hayır</button>
+                    <button type="button" class="btn btn-danger" id="confirmRefusal">Evet</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var approveButtons = document.querySelectorAll('.btn-success');
+            var approveButtons = document.querySelectorAll('.btn-secim');
             var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
             var confirmButton = document.getElementById('confirmApproval');
             var selectedRow;
@@ -189,7 +236,8 @@
 
                 var data = {
                     DersKodu: courseId,
-                    KullaniciNo: studentId
+                    KullaniciNo: studentId,
+                    Durum: 'Onay'
                 };
 
                 fetch('/api/DersSecim/approve', {
@@ -199,15 +247,58 @@
                     },
                     body: JSON.stringify(data),
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                    })
+                .then(data => {
+                    console.log('Success:', data);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                })
                 confirmationModal.hide();
             });
+
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var refuseButtons = document.querySelectorAll('.btn-reddet');
+            var refusalModal = new bootstrap.Modal(document.getElementById('refusalModal'));
+            var confirmRefusalButton = document.getElementById('confirmRefusal');
+            var selectedRow;
 
+            refuseButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    selectedRow = this.closest('tr');
+                    refusalModal.show();
+                });
+            });
+
+            confirmRefusalButton.addEventListener('click', function () {
+                var studentId = selectedRow.cells[0].innerText;
+                var courseId = selectedRow.cells[2].innerText;
+
+                var data = {
+                    DersKodu: courseId,
+                    KullaniciNo: studentId,
+                    Durum: 'Red'
+                };
+
+                fetch('/api/DersSecim/approve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(data => {
+                        console.log('Success:', data);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    })
+                refusalModal.hide();
+            });
+        });
+    </script>
 </body>
 </html>

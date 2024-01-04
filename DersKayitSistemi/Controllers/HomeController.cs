@@ -45,7 +45,9 @@ namespace DersKayitSistemi.Controllers
             var kullaniciNo = HttpContext.Session.GetString("KullaniciNo");
             if (kullaniciNo != null)
             {
+                var kull = _context.Kullanicilar.FirstOrDefault(k => k.KullaniciNo == kullaniciNo);
                 ViewBag.KullaniciNo = kullaniciNo;
+                ViewBag.KullaniciIsim = kull.KullaniciIsim;
             }
             else
             {
@@ -53,6 +55,12 @@ namespace DersKayitSistemi.Controllers
             }
 
             return View(dersler);
+        }
+
+        public IActionResult DersProgrami()
+        {
+            var dersSecimleri = _context.DersSecim.Include(ds => ds.Kullanici).Include(ds => ds.Ders).ToList();
+            return View(dersSecimleri);
         }
 
         public IActionResult DersOnayla()

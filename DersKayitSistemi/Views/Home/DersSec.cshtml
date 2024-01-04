@@ -86,10 +86,10 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Ders Seçimi</a>
+                        <a class="nav-link active" aria-current="page" href="#">Ders Seçim</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ders Programı</a>
+                        <a class="nav-link active" aria-current="page" href="/Home/DersProgrami">Ders Programı</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
@@ -114,7 +114,7 @@
                             <!-- Öğrenci Bilgileri -->
                             <div class="col-md-3">
                                 <label class="form-label">Öğrenci Adı:</label>
-                                <input type="text" class="form-control" value="Öğrenci Adı" readonly>
+                                <input type="text" class="form-control" value="@ViewBag.KullaniciIsim" readonly>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Öğrenci No:</label>
@@ -139,11 +139,11 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Öğrencinin Toplam Kredisi:</label>
-                                <input type="number" class="form-control" value="0" readonly id="totalCredits">
+                                <input type="number" class="form-control" value="140" readonly id="totalCredits">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Bu Dönem Alınan Kredi:</label>
-                                <input type="number" class="form-control" value="0" readonly id="thisTermCredits">
+                                <input type="number" class="form-control" value="24" readonly id="thisTermCredits">
                             </div>
                         </div>
                     </div>
@@ -309,7 +309,7 @@
 
                             setTimeout(function () {
                                 location.reload();
-                            }, 4000);
+                            }, 2000);
                         } else {
                             document.querySelector('#confirmationModal .modal-body').innerText = 'Ders seçimi yapılamadı.';
                         }

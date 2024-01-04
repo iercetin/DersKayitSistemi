@@ -49,33 +49,36 @@ namespace DersKayitSistemi.Controllers
         }
 
         [HttpPost("approve")]
-        public IActionResult ApproveDersSecim([FromBody] DersSecimDto dersSecimDto)
+        public IActionResult ApproveDersSecim([FromBody] DersSecimDurumDto dersSecimDurumDto)
         {
-            _logger.LogInformation($"Ders onaylama isteği: KullaniciNo: {dersSecimDto.KullaniciNo}, DersKodu: {dersSecimDto.DersKodu}");
+            _logger.LogInformation($"Ders onaylama isteği: KullaniciNo: {dersSecimDurumDto.KullaniciNo}, DersKodu: {dersSecimDurumDto.DersKodu}");
 
             var dersSecim = _context.DersSecim
-                .FirstOrDefault(ds => ds.Kullanici.KullaniciNo == dersSecimDto.KullaniciNo && ds.Ders.DersKodu == dersSecimDto.DersKodu);
+                .FirstOrDefault(ds => ds.Kullanici.KullaniciNo == dersSecimDurumDto.KullaniciNo && ds.Ders.DersKodu == dersSecimDurumDto.DersKodu);
 
             if (dersSecim == null)
             {
                 return NotFound("Ders seçimi bulunamadı.");
             }
 
-            dersSecim.OnayliMi = true;
+            if (dersSecimDurumDto.Durum == "Onay")
+            {
+                dersSecim.OnayliMi = true;
+            }
+            else if (dersSecimDurumDto.Durum == "Red") {
+                _context.DersSecim.Remove(dersSecim);
 
+            }
+            
             _context.SaveChanges();
 
             return Ok();
         }
 
-
-
         [HttpGet("selected/{kullaniciNo}")]
         public IActionResult GetSelectedCourses(string kullaniciNo)
         {
             var kull = _context.Kullanicilar.FirstOrDefault(k => k.KullaniciNo == kullaniciNo);
-
- 
             var selectedCourses = _context.DersSecim
                 .Where(ds => ds.KullaniciId == kull.KullaniciId)
                 .Select(ds => new { ds.Ders.DersKodu, ds.Ders.DersAdi, ds.Ders.DersKontenjan, ds.OnayliMi })
@@ -91,4 +94,11 @@ public class DersSecimDto
 {
     public string KullaniciNo { get; set; }
     public string DersKodu { get; set; }
+}
+
+public class DersSecimDurumDto
+{
+    public string KullaniciNo { get; set; }
+    public string DersKodu { get; set; }
+    public string Durum{ get; set; }
 }
